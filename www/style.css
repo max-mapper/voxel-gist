@@ -18,11 +18,14 @@ body {
   right: 0;
   bottom: 0;
 }
-.hidden { visibility: hidden }
+.hidden { visibility: hidden; display: none; }
 .loading { }
 #edit { padding: 10px; }
+#howto { float: right; width: 30%; }
+#howto p { margin-bottom: 10px }
+#howto ul { position: relative; left: 20px;  }
 .logo { padding: 5px 10px; float: left; }
-.attribution { margin-left: 10px; float: left; font-size: 12px; line-height: 52px; height: 50px;}
+.attribution { margin: 20px 0 0 0; float: left; font-size: 12px; }
 #controls { width: 33%; top: 0; right: 0; left: initial;}
 #container {
   -moz-user-select: none;

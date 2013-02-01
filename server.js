@@ -38,10 +38,18 @@ function setUserID(res) {
   return id
 }
 
+function saveGist(req, res) {
+  res.statusCode = 302
+  res.setHeader('location', '/123')
+  res.end()
+}
+
 var http = require('http').createServer(function(req, res) {
   // github login
   if (req.url.match(/login/)) return github.login(req, res)
   if (req.url.match(/callback/)) return github.callback(req, res)
+  
+  if (req.url.match(/save/)) return saveGist(req, res)
   
   // rules: all GET are static, for everything else there's snuggie
   if (req.method === "GET") return ecstatic(req, res)
