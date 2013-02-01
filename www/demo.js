@@ -1,5 +1,9 @@
 var elementClass = require('element-class')
 var sandbox = require('browser-module-sandbox')
+var qs = require('querystring')
+var cookie = qs.parse(document.cookie)
+var loggedIn = false
+if (cookie && cookie['user-id']) loggedIn = true
 
 // todo read from template/file
 var defaultGame = "var createGame = require('voxel-engine')\n\n" +

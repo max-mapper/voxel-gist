@@ -16,7 +16,9 @@
     "snuggie": "0.0.3",
     "uglify-js": "2.2.3",
     "voxel-engine": "0.4.3",
-    "browser-module-sandbox": "0.0.3"
+    "browser-module-sandbox": "0.0.3",
+    "github-oauth": "0.0.3",
+    "hat": "0.0.3"
   },
   "engines": {
     "node": "0.8.x"
