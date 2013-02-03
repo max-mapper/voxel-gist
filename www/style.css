@@ -1,9 +1,10 @@
 body {
   font: 300 14px "Helvetica Neue", Helvetica, Arial;
-  min-height: 1000px;
 }
 #header {
-  position: absolute;
+  background: white;
+  position: fixed;
+  z-index: 2;
   top: 0;
   height: 50px;
   left: 0;
@@ -20,8 +21,8 @@ body {
 }
 .hidden { visibility: hidden; display: none; }
 .loading { }
-#edit { padding: 10px; }
-#howto { float: right; width: 30%; overflow: auto; height: 400px; }
+#edit { padding: 10px; z-index: 1; }
+#howto { float: right; width: 30%; overflow: auto; }
 #howto p { margin-bottom: 10px }
 .logo { padding: 5px 10px; float: left; }
 .attribution { margin: 20px 0 0 0; float: left; font-size: 12px; }
