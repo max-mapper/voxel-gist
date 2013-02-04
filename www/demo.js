@@ -3,9 +3,10 @@ var sandbox = require('browser-module-sandbox')
 var qs = require('querystring')
 var url = require('url')
 var request = require('browser-request')
-var cookie = qs.parse(document.cookie)
+var cookie = require('cookie')
+var cookies = cookie.parse(document.cookie)
 var loggedIn = false
-if (cookie && cookie['user-id']) loggedIn = true
+if (cookies && cookies['user-id']) loggedIn = true
 
 var parsedURL = url.parse(window.location.href)
 var gistID = parsedURL.path.match(/^\/(\d+)$/)
