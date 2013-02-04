@@ -3,6 +3,7 @@ var sandbox = require('browser-module-sandbox')
 var qs = require('querystring')
 var url = require('url')
 var request = require('browser-request')
+var jsonp = require('jsonp')
 var cookie = require('cookie')
 var cookies = cookie.parse(document.cookie)
 var loggedIn = false
@@ -16,8 +17,11 @@ if (loggedIn) changeLoginButtonToSave()
 
 function loadCode(cb) {
   if (gistID) {
-    return request({url: '/gist/' + gistID}, function(err, resp, gist) {
-      cb(err, gist)
+    return jsonp('https://api.github.com/gists/' + gistID, function(err, gist) {
+      if (err) return cb(err)
+      var json = gist.data
+      if (!json.files || !json.files['index.js']) return cb({error: 'no index.js in this gist', json: json})
+      cb(false, json.files['index.js'].content)
     })
   }
   

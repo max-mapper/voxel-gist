@@ -82,14 +82,6 @@ function checkSession(req, res) {
   if (token && !sessions[token]) res.setHeader('set-cookie', 'user-id=; path=/')
 }
 
-function fetchGist(req, res) {
-  var id = req.url.match(/^\/gist\/(\d+)$/)
-  if (!id) return res.end('error')
-  request({url: 'https://api.github.com/gists/' + id[1], json: true}, function(err, resp, json) {
-    res.end(json.files['index.js'].content)
-  })
-}
-
 var http = require('http').createServer(function(req, res) {
   checkSession(req, res)
 
@@ -98,14 +90,11 @@ var http = require('http').createServer(function(req, res) {
   var gistID = req.url.match(/^\/(\d+)$/)
   if (gistID) req.url = req.url.replace(gistID[1], '')
   
-  
-  // gist fetching
-  if (req.url.match(/^\/gist/)) return fetchGist(req, res)
-  
   // github login
   if (req.url.match(/login/)) return github.login(req, res)
   if (req.url.match(/callback/)) return github.callback(req, res)
   
+  // gist saving
   if (req.url.match(/save/)) return saveGist(req, res)
   
   // rules: all GET are static, for everything else there's snuggie
