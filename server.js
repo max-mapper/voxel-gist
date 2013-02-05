@@ -54,15 +54,15 @@ function saveGist(req, res) {
     var headers = {
       'Authorization': 'token ' + token
     }
-    var reqOpts = {json: gist, url: 'https://api.github.com/gists', headers: headers}
+    var reqOpts = {json: gist, url: 'https://api.github.com/gists', headers: headers, method: "POST"}
     if (id) { 
       reqOpts.method = "PATCH"
       reqOpts.url = reqOpts.url + '/' + id
     }
-    request.post(reqOpts, function(err, resp, body) {
+    request(reqOpts, function(err, resp, body) {
       if (err) return res.end(JSON.stringify({error: err}))
-      if (resp.statusCode > 399) return res.end(JSON.stringify(body))
-      res.end(body.id)
+      if (resp.statusCode > 399) return res.end(JSON.stringify({error: body}))
+      res.end(JSON.stringify({ id: body.id }))
     })    
   }))
 }

@@ -84,8 +84,10 @@ loadCode(function(err, code) {
   function saveGist(id) {
     var saveURL = '/save'
     if (id) saveURL = saveURL += '/' + id
-    request({url: saveURL, method: "POST", body: gameCreator.editor.editor.getValue()}, function(err, resp, gistID) {
-      window.location.href = "/" + gistID
+    request({url: saveURL, method: "POST", body: gameCreator.editor.editor.getValue()}, function(err, resp, body) {
+      var json = JSON.parse(body)
+      if (json.error) return alert(JSON.stringify(json.error))
+      window.location.href = "/" + json.id
     })
   }
 })

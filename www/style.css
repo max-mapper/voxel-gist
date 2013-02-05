@@ -39,7 +39,6 @@ body {
 	font-family: CenturySchoolbookMono;
 	font-size: 15px;
 	background-color: rgba(255,255,255,0.75);
-
 	-webkit-transform: translateZ(0); /* Workaround for OSX antialias issue */
 
 }

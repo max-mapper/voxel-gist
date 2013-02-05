@@ -1,7 +1,7 @@
 {
   "name": "voxel-gist",
   "subdomain": "voxel-creator",
-  "version": "0.0.1-32",
+  "version": "0.0.1-33",
   "description": "voxel.js app that lets you create games in browser and save/load from github gist",
   "scripts": {
     "start": "node server.js"
