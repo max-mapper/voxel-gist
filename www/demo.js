@@ -76,7 +76,7 @@ loadCode(function(err, code) {
   
   if (!gistID) {
     gameCreator.editor.on("change", function() {
-      var code = gameCreator.editor.getValue()
+      var code = gameCreator.editor.editor.getValue()
       localStorage.setItem('code', code)
     })
   }
@@ -84,7 +84,7 @@ loadCode(function(err, code) {
   function saveGist(id) {
     var saveURL = '/save'
     if (id) saveURL = saveURL += '/' + id
-    request({url: saveURL, method: "POST", body: gameCreator.editor.getValue()}, function(err, resp, gistID) {
+    request({url: saveURL, method: "POST", body: gameCreator.editor.editor.getValue()}, function(err, resp, gistID) {
       window.location.href = "/" + gistID
     })
   }

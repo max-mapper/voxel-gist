@@ -1,3 +1,12 @@
+@font-face {
+
+	font-family: CenturySchoolbookMono;
+	src: url('Century-Schoolbook-Monospace-BT.ttf');
+	font-weight: normal;
+	font-style: normal;
+
+}
+
 body {
   font: 300 14px "Helvetica Neue", Helvetica, Arial;
 }
@@ -21,7 +30,46 @@ body {
 }
 .hidden { visibility: hidden; display: none; }
 .loading { }
-#edit { padding: 10px; z-index: 1; }
+
+#edit { z-index: 1; }
+
+#edit .CodeMirror {
+
+	height: 100%;
+	font-family: CenturySchoolbookMono;
+	font-size: 15px;
+	background-color: rgba(255,255,255,0.75);
+
+	-webkit-transform: translateZ(0); /* Workaround for OSX antialias issue */
+
+}
+
+#edit .CodeMirror-scroll {
+
+	height: 100%;
+
+}
+
+#edit .CodeMirror div.CodeMirror-selected {
+
+	background: rgba(0,0,0,0.1);
+
+}
+
+#edit .CodeMirror-focused div.CodeMirror-selected {
+
+	background: rgba(0,0,255,0.1);
+
+}
+
+#edit .CodeMirror .errorLine {
+
+	background: rgba(255,0,0,0.25);
+
+}
+
+#play { overflow: hidden }
+
 #howto { float: right; width: 30%; overflow: auto; }
 #howto p { margin-bottom: 10px }
 .logo { padding: 5px 10px; float: left; }

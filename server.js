@@ -34,13 +34,6 @@ github.on('token', function(token, res) {
   res.end()
 })
 
-function setUserID(res) {
-  var id = uuid()
-  var cookie = 'user-id=' + id + '; path=/'
-  res.setHeader('set-cookie', cookie)
-  return id
-}
-
 function saveGist(req, res) {
   var id = req.url.match(/^\/save\/(\d+)$/)
   if (id) id = id[1]
@@ -72,7 +65,13 @@ function saveGist(req, res) {
       res.end(body.id)
     })    
   }))
+}
 
+function setUserID(res) {
+  var id = uuid()
+  var cookie = 'user-id=' + id + '; path=/'
+  res.setHeader('set-cookie', cookie)
+  return id
 }
 
 function checkSession(req, res) {
@@ -83,6 +82,7 @@ function checkSession(req, res) {
 }
 
 var http = require('http').createServer(function(req, res) {
+  // make sure everyone has a user-id cookie
   checkSession(req, res)
 
   // matches foo.com/324839425 (gist id)
@@ -97,9 +97,10 @@ var http = require('http').createServer(function(req, res) {
   // gist saving
   if (req.url.match(/save/)) return saveGist(req, res)
   
-  // rules: all GET are static, for everything else there's snuggie
+  // rules: all GET are static
   if (req.method === "GET") return ecstatic(req, res)
 
+  // for everything else there's snuggie
   snuggie.handler(req, function(err, bundle) {
     if (err) return snuggie.respond(res, JSON.stringify(err))
     var minified = uglify.minify(bundle, {fromString: true}).code
