@@ -14,10 +14,13 @@ var gistID = parsedURL.path.match(/^\/(\d+)$/)
 if (gistID) gistID = gistID[1]
 
 if (loggedIn) changeLoginButtonToSave()
+var loadingClass = elementClass(document.querySelector('.loading'))
 
 function loadCode(cb) {
   if (gistID) {
+    loadingClass.remove('hidden')
     return jsonp('https://api.github.com/gists/' + gistID, function(err, gist) {
+      loadingClass.add('hidden')
       if (err) return cb(err)
       var json = gist.data
       if (!json.files || !json.files['index.js']) return cb({error: 'no index.js in this gist', json: json})
@@ -56,7 +59,10 @@ loadCode(function(err, code) {
   gameCreator.controls.on('select', function(item) {
     if (item === "edit") elementClass(howTo).add('hidden')
     if (item === "howto") elementClass(howTo).remove('hidden')
-    if (item === "login") window.location.href="/login"
+    if (item === "login") {
+      loadingClass.remove('hidden')
+      window.location.href="/login"
+    }
     if (item === "save") saveGist(gistID)
   })
 
@@ -84,7 +90,9 @@ loadCode(function(err, code) {
   function saveGist(id) {
     var saveURL = '/save'
     if (id) saveURL = saveURL += '/' + id
+    loadingClass.remove('hidden')
     request({url: saveURL, method: "POST", body: gameCreator.editor.editor.getValue()}, function(err, resp, body) {
+      loadingClass.add('hidden')
       var json = JSON.parse(body)
       if (json.error) return alert(JSON.stringify(json.error))
       window.location.href = "/" + json.id
