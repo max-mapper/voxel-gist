@@ -33,7 +33,7 @@ function loadCode(cb) {
   "window.game = createGame()\n\n" +
   "// rotate camera to look straight down\n" +
   "game.controls.pitchObject.rotation.x = -1.5\n\n" + 
-  "var container = document.querySelector('#play')\n" +
+  "var container = document.body\n" +
   "game.appendTo(container)\n" + 
   "game.setupPointerLock(container)\n"
   cb(false, defaultGame)
