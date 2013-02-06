@@ -9,11 +9,10 @@ var cookies = cookie.parse(document.cookie)
 var loggedIn = false
 if (cookies && cookies['user-id']) loggedIn = true
 
-var parsedURL = url.parse(window.location.href)
+var parsedURL = url.parse(window.location.href, true)
 var gistID = parsedURL.path.match(/^\/(\d+)$/)
 if (gistID) gistID = gistID[1]
 
-if (loggedIn) changeLoginButtonToSave()
 var loadingClass = elementClass(document.querySelector('.loading'))
 
 function loadCode(cb) {
@@ -46,11 +45,15 @@ loadCode(function(err, code) {
   if (err) return alert(err)
   
   var gameCreator = sandbox({
+    iframeHead: "<script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r54/three.min.js'></script>",
+    codemirrorOptions: { lineWrapping: true},
     defaultCode: code,
     output: document.querySelector('#play'),
     controls: document.querySelector('#controls'),
     editor: document.querySelector('#edit'),
   })
+
+  if (parsedURL.query.save) return saveGist(gistID)
 
   var howTo = document.querySelector('#howto')
   var crosshair = document.querySelector('#crosshair')
@@ -59,11 +62,11 @@ loadCode(function(err, code) {
   gameCreator.controls.on('select', function(item) {
     if (item === "edit") elementClass(howTo).add('hidden')
     if (item === "howto") elementClass(howTo).remove('hidden')
-    if (item === "login") {
+    if (item === "save") {
+      if (loggedIn) return saveGist(gistID)
       loadingClass.remove('hidden')
-      window.location.href="/login"
+      window.location.href = "/login"
     }
-    if (item === "save") saveGist(gistID)
   })
 
   gameCreator.on('bundleStart', function() {
@@ -99,11 +102,3 @@ loadCode(function(err, code) {
     })
   }
 })
-
-function changeLoginButtonToSave() {
-  var loginButton = document.querySelector('#login')
-  var label = loginButton.querySelector('div')
-  label.setAttribute('data-id', 'save')
-  label.innerHTML = 'Save'
-  loginButton.querySelector('img').setAttribute('src', 'icons/noun_project_10208.png')
-}

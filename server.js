@@ -30,7 +30,7 @@ github.on('token', function(token, res) {
   var id = setUserID(res)
   sessions[id] = token.access_token
   res.statusCode = 302
-  res.setHeader('location', '/')
+  res.setHeader('location', '/?save=true')
   res.end()
 })
 
@@ -91,11 +91,11 @@ var http = require('http').createServer(function(req, res) {
   if (gistID) req.url = req.url.replace(gistID[1], '')
   
   // github login
-  if (req.url.match(/login/)) return github.login(req, res)
-  if (req.url.match(/callback/)) return github.callback(req, res)
+  if (req.url.match(/\/login/)) return github.login(req, res)
+  if (req.url.match(/\/callback/)) return github.callback(req, res)
   
   // gist saving
-  if (req.url.match(/save/)) return saveGist(req, res)
+  if (req.url.match(/\/save/)) return saveGist(req, res)
   
   // rules: all GET are static
   if (req.method === "GET") return ecstatic(req, res)

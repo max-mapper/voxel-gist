@@ -1,7 +1,7 @@
 {
   "name": "voxel-gist",
   "subdomain": "voxel-creator",
-  "version": "0.0.1-33",
+  "version": "0.0.1-35",
   "description": "voxel.js app that lets you create games in browser and save/load from github gist",
   "scripts": {
     "start": "node server.js"
@@ -17,11 +17,10 @@
     "cookie": "0.0.5",
     "snuggie": "0.0.3",
     "uglify-js": "2.2.3",
-    "browser-module-sandbox": "0.0.7",
+    "browser-module-sandbox": "0.1.0",
     "github-oauth": "0.0.3",
     "concat-stream": "0.1.1",
     "hat": "0.0.3",
-    "three": "0.54.0",
     "request": "2.12.0",
     "browser-request": "0.2.0",
     "voxel-engine": "0.5.3",
