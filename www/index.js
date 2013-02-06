@@ -78,9 +78,8 @@ loadCode(function(err, code) {
   })
 
   gameCreator.on('edit', function() {
-    if (typeof game !== "undefined") game = undefined
-    var canvas = gameCreator.outputEl.querySelector('canvas')
-    if (canvas) gameCreator.outputEl.removeChild(canvas)
+    // clear current game
+    if (gameCreator.iframe) gameCreator.iframe.setHTML(" ")
   })
   
   if (!gistID) {
