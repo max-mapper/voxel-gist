@@ -1,4 +1,6 @@
 var elementClass = require('element-class')
+var toolbar = require('toolbar')
+var jsEditor = require('javascript-editor')
 var sandbox = require('browser-module-sandbox')
 var qs = require('querystring')
 var url = require('url')
@@ -14,6 +16,9 @@ var gistID = parsedURL.path.match(/^\/(\d+)$/)
 if (gistID) gistID = gistID[1]
 
 var loadingClass = elementClass(document.querySelector('.loading'))
+var outputEl = document.querySelector('#play')
+var editorEl = document.querySelector('#edit')
+var painterEl = document.querySelector('#paint')
 
 function loadCode(cb) {
   if (gistID) {
@@ -41,16 +46,24 @@ function loadCode(cb) {
   cb(false, defaultGame)
 }
 
+function loadPainter() {
+  
+}
+
 loadCode(function(err, code) {
-  if (err) return alert(err)
+  if (err) return alert(JSON.stringify(err))
+  
+  var snuggieAPI = window.location.protocol + '//' + window.location.host
+
+  var editor = jsEditor({
+    value: code,
+    container: editorEl,
+    lineWrapping: true
+  })
   
   var gameCreator = sandbox({
     iframeHead: "<script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r54/three.min.js'></script>",
-    codemirrorOptions: { lineWrapping: true},
-    defaultCode: code,
-    output: document.querySelector('#play'),
-    controls: document.querySelector('#controls'),
-    editor: document.querySelector('#edit'),
+    container: outputEl
   })
 
   if (parsedURL.query.save) return saveGist(gistID)
@@ -58,14 +71,37 @@ loadCode(function(err, code) {
   var howTo = document.querySelector('#howto')
   var crosshair = document.querySelector('#crosshair')
   var crosshairClass = elementClass(crosshair)
+  var controlsContainer = document.querySelector('#controls')
+  
+  var controls = toolbar({el: controlsContainer, noKeydown: true})
 
-  gameCreator.controls.on('select', function(item) {
-    if (item === "edit") elementClass(howTo).add('hidden')
+  controls.on('select', function(item) {
+    var className = '#' + item
+    var el = document.querySelector(className)
+    if (el === outputEl) {
+      elementClass(outputEl).remove('hidden')
+      elementClass(editorEl).add('hidden')
+      gameCreator.bundle(editor.editor.getValue())
+    }
+    if (el === editorEl) {
+      if (!editorEl.className.match(/hidden/)) return
+      elementClass(editorEl).remove('hidden')
+      elementClass(outputEl).add('hidden')
+      // clear current game
+      if (gameCreator.iframe) gameCreator.iframe.setHTML(" ")
+      elementClass(howTo).add('hidden')
+    }
     if (item === "howto") elementClass(howTo).remove('hidden')
     if (item === "save") {
       if (loggedIn) return saveGist(gistID)
       loadingClass.remove('hidden')
       window.location.href = "/login"
+    }
+    if (item === "paint") {
+      if (gameCreator.iframe) gameCreator.iframe.setHTML(" ")
+      elementClass(editorEl).add('hidden')
+      elementClass(outputEl).add('hidden')
+      loadPainter()
     }
   })
 
@@ -76,15 +112,10 @@ loadCode(function(err, code) {
   gameCreator.on('bundleEnd', function() {
     crosshairClass.remove('spinning')
   })
-
-  gameCreator.on('edit', function() {
-    // clear current game
-    if (gameCreator.iframe) gameCreator.iframe.setHTML(" ")
-  })
   
   if (!gistID) {
-    gameCreator.editor.on("change", function() {
-      var code = gameCreator.editor.editor.getValue()
+    editor.on("change", function() {
+      var code = editor.editor.getValue()
       localStorage.setItem('code', code)
     })
   }
@@ -93,7 +124,7 @@ loadCode(function(err, code) {
     var saveURL = '/save'
     if (id) saveURL = saveURL += '/' + id
     loadingClass.remove('hidden')
-    request({url: saveURL, method: "POST", body: gameCreator.editor.editor.getValue()}, function(err, resp, body) {
+    request({url: saveURL, method: "POST", body: editor.editor.getValue()}, function(err, resp, body) {
       loadingClass.add('hidden')
       var json = JSON.parse(body)
       if (json.error) return alert(JSON.stringify(json.error))
