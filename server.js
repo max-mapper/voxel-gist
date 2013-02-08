@@ -38,7 +38,7 @@ function saveGist(req, res) {
   var id = req.url.match(/^\/save\/(\d+)$/)
   if (id) id = id[1]
   req.pipe(concat(function(err, funcString) {
-    if (err) return res.end(JSON.stringify({error: err}))
+    if (err) return res.end(JSON.stringify({"concatError": true, error: err}))
     var cookies = qs.parse(req.headers.cookie)
     if (!cookies['user-id']) return res.end(JSON.stringify({error: 'not logged in'}))
     var token = sessions[cookies['user-id']]
@@ -60,8 +60,8 @@ function saveGist(req, res) {
       reqOpts.url = reqOpts.url + '/' + id
     }
     request(reqOpts, function(err, resp, body) {
-      if (err) return res.end(JSON.stringify({error: err}))
-      if (resp.statusCode > 399) return res.end(JSON.stringify({error: body}))
+      if (err) return res.end(JSON.stringify({"githubError": true, req: reqOpts, error: err, body: body}))
+      if (resp.statusCode > 399) return res.end(JSON.stringify({"githubError": true, req: reqOpts, error: body}))
       res.end(JSON.stringify({ id: body.id }))
     })    
   }))
@@ -78,11 +78,12 @@ function checkSession(req, res) {
   if (!req.headers.cookie) return
   var cookies = qs.parse(req.headers.cookie)
   var token = cookies['user-id']
+  // delete old sessions
   if (token && !sessions[token]) res.setHeader('set-cookie', 'user-id=; path=/')
 }
 
 var http = require('http').createServer(function(req, res) {
-  // make sure everyone has a user-id cookie
+  // make sure everyone has a valid session 
   checkSession(req, res)
 
   // matches foo.com/324839425 (gist id)
@@ -94,12 +95,12 @@ var http = require('http').createServer(function(req, res) {
   if (req.url.match(/\/login/)) return github.login(req, res)
   if (req.url.match(/\/callback/)) return github.callback(req, res)
   
+  // rules: all GET are static
+  if (req.method === "GET") return ecstatic(req, res)
+  
   // gist saving
   if (req.url.match(/\/save/)) return saveGist(req, res)
   
-  // rules: all GET are static
-  if (req.method === "GET") return ecstatic(req, res)
-
   // for everything else there's snuggie
   snuggie.handler(req, function(err, bundle) {
     if (err) return snuggie.respond(res, JSON.stringify(err))

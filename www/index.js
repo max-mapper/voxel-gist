@@ -46,10 +46,6 @@ function loadCode(cb) {
   cb(false, defaultGame)
 }
 
-function loadPainter() {
-  
-}
-
 loadCode(function(err, code) {
   if (err) return alert(JSON.stringify(err))
   
@@ -96,12 +92,6 @@ loadCode(function(err, code) {
       if (loggedIn) return saveGist(gistID)
       loadingClass.remove('hidden')
       window.location.href = "/login"
-    }
-    if (item === "paint") {
-      if (gameCreator.iframe) gameCreator.iframe.setHTML(" ")
-      elementClass(editorEl).add('hidden')
-      elementClass(outputEl).add('hidden')
-      loadPainter()
     }
   })
 
