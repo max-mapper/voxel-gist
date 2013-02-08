@@ -52,6 +52,7 @@
     <div id="edit" class="large">
       <div id="howto" class="">
         <p>When you select <code>Play</code> your code from <code>Edit</code> will be turned into a game that you can play. You can go back to <code>Edit</code> as many times as you want to keep adding things to your game like new modules.</p>
+        <p>Read the <a target="_blank" href="https://github.com/maxogden/voxel-engine/blob/master/README.md#api">main game documentation here</a>.</p>
         <p>View all of the different modules that you can <code>require</code> at the <a href="http://voxeljs.com#addons" target="_blank">add-ons section of voxeljs.com</a>.</p>
         <p>You can go load any github gist that has a voxel game inside a file called <code>index.js</code>. To save and share your code as gists you will need a <a href="https://github.com/" target="_blank">Github account</a>. It is free to sign up for one and they are useful to have as a coder. After you save you can share a link to your game with anyone!
         </p>
@@ -74,30 +75,25 @@
     </div>
     <script id="template" type="text/template">var createGame = require('voxel-engine')
 
-function sphereWorld(x, y,z ) {
-  // return the number of the material you want to show up
-  // at the current x, y, z position.
-  // the numbers refer to the games materials array.
+function sphereWorld(x, y, z) {
+  // return the index of the material you want to show up
   // 0 is air
 	if (x*x + y*y + z*z > 15*15) return 0
-  // 3 is dirt
   return 3	
 }
 
 var game = createGame({
-  // use the sphereWorld function to make the worlds voxels
   generate: sphereWorld,
-  // make the player start y (up) position 1000
-  startingPosition: [0, 1000, 0],
+  startingPosition: [0, 1000, 0], // x, y, z
   materials: [['grass', 'dirt', 'grass_dirt'], 'brick', 'dirt', 'obsidian', 'bedrock']
 })
 
 // rotate camera to look straight down
 game.controls.pitchObject.rotation.x = -1.5
 
-// add the game to the page and make it playable
 var container = document.body
 game.appendTo(container)
+// have the game take over your mouse pointer when you click on it
 game.setupPointerLock(container)</script>
   <script type="text/javascript" src="bundle.js"></script>    
   </body>
