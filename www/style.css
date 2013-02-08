@@ -75,7 +75,7 @@ body {
 #howto p { margin-bottom: 10px }
 .logo { padding: 5px 10px; float: left; }
 .attribution { margin: 20px 0 0 0; float: left; font-size: 12px; }
-#controls { width: 33%; top: 0; right: 0; left: initial;}
+#controls { width: 50%; top: 0; right: 0; left: initial;}
 #container {
   -moz-user-select: none;
   -webkit-user-select: none;

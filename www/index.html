@@ -9,7 +9,7 @@
   </head>
   <body>
     <div id="header">
-      <img class="logo" src="logo-black.png">
+      <a href="/"><img class="logo" src="logo-black.png"></a>
 
       <div class="loading hidden">
         <img src="cube.gif"><div>LOADING...</div>
@@ -17,7 +17,7 @@
       
       <nav class="bar-tab" id="controls">
         <ul class="tab-inner">
-          <li class="tab-item active">
+          <li class="tab-item">
             <a href="">
               <img class="tab-icon" src="icons/noun_project_4209.png">
               <div class="tab-label" data-id="edit">Edit</div>
@@ -35,7 +35,7 @@
               <div class="tab-label" data-id="save">Save Gist</div>
             </a>
           </li>
-          <li class="tab-item">
+          <li class="tab-item active">
             <a href="">
               <img class="tab-icon" src="icons/noun_project_4200.png">
               <div class="tab-label" data-id="howto">How-To</div>
@@ -50,40 +50,21 @@
     <div id="paint" class="large hidden">
     </div>
     <div id="edit" class="large">
-      <div id="howto" class="hidden">
+      <div id="howto" class="">
         <p>When you select <code>Play</code> your code from <code>Edit</code> will be turned into a game that you can play. You can go back to <code>Edit</code> as many times as you want to keep adding things to your game like new modules.</p>
-        <p>To save and share your code you will need a <a href="https://github.com/" target="_blank">Github account</a>. It is free to sign up for one and they are useful to have as a coder.</p>
-        <p>Here is a list of modules that you can <code>require</code>. Click on each one to learn more about how to use it:</p>
-        <ul>
-          <li><a target="_blank" href="http://github.com/maxogden/voxel-engine">voxel-engine</a></li>
-          <li><a target="_blank" href="http://github.com/maxogden/voxel">voxel</a></li>
-          <li><a target="_blank" href="http://github.com/ryanramage/voxel-audio">voxel-audio</a></li>
-          <li><a target="_blank" href="http://github.com/shama/voxel-camera">voxel-camera</a></li>
-          <li><a target="_blank" href="http://github.com/substack/voxel-chunks">voxel-chunks</a></li>
-          <li><a target="_blank" href="http://github.com/substack/voxel-debris">voxel-debris</a></li>
-          <li><a target="_blank" href="http://github.com/shama/voxel-drone">voxel-drone</a></li>
-          <li><a target="_blank" href="http://github.com/substack/voxel-forest">voxel-forest</a></li>
-          <li><a target="_blank" href="http://github.com/incompl/voxel-heightmap-terrain">voxel-heightmap-terrain</a></li>
-          <li><a target="_blank" href="http://github.com/maxogden/voxel-highlight">voxel-highlight</a></li>
-          <li><a target="_blank" href="http://github.com/maxogden/voxel-mesh">voxel-mesh</a></li>
-          <li><a target="_blank" href="http://github.com/shama/voxel-move">voxel-move</a></li>
-          <li><a target="_blank" href="http://github.com/maxogden/voxel-perlin-terrain">voxel-perlin-terrain</a></li>
-          <li><a target="_blank" href="http://github.com/substack/voxel-portal">voxel-portal</a></li>
-          <li><a target="_blank" href="http://github.com/substack/voxel-portal-gun">voxel-portal-gun</a></li>
-          <li><a target="_blank" href="http://github.com/hughsk/voxel-pp">voxel-pp</a></li>
-          <li><a target="_blank" href="http://github.com/maxogden/voxel-region-change">voxel-region-change</a></li>
-          <li><a target="_blank" href="http://github.com/robbles/voxel-rescue">voxel-rescue</a></li>
-          <li><a target="_blank" href="http://github.com/maxogden/voxel-script-gun">voxel-script-gun</a></li>
-          <li><a target="_blank" href="http://github.com/shama/voxel-share">voxel-share</a></li>
-          <li><a target="_blank" href="http://github.com/maxogden/voxel-simplex-terrain">voxel-simplex-terrain</a></li>
-          <li><a target="_blank" href="http://github.com/shama/voxel-sky">voxel-sky</a></li>
-          <li><a target="_blank" href="http://github.com/englercj/voxel-storage">voxel-storage</a></li>
-          <li><a target="_blank" href="http://github.com/shama/voxel-texture">voxel-texture</a></li>
-          <li><a target="_blank" href="http://github.com/shama/voxel-throw">voxel-throw</a></li>
-          <li><a target="_blank" href="http://github.com/shama/voxel-trajectory">voxel-trajectory</a></li>
-          <li><a target="_blank" href="https://github.com/mikolalysenko/isosurface">isosurface</a></li>
-        </ul>
+        <p>View all of the different modules that you can <code>require</code> at the <a href="http://voxeljs.com#addons" target="_blank">add-ons section of voxeljs.com</a>.</p>
+        <p>You can go load any github gist that has a voxel game inside a file called <code>index.js</code>. To save and share your code as gists you will need a <a href="https://github.com/" target="_blank">Github account</a>. It is free to sign up for one and they are useful to have as a coder. After you save you can share a link to your game with anyone!
+        </p>
+        <p>Here are some examples to try out:</p>
+        <p>
+          <ul>
+            <li><a href="http://voxel-creator.jit.su/4711236">http://voxel-creator.jit.su/4711236</a></li>
+            <li><a href="http://voxel-creator.jit.su/4728483">http://voxel-creator.jit.su/4728483</a></li>
+            <li><a href="http://voxel-creator.jit.su/4711094">http://voxel-creator.jit.su/4711094</a></li>
+          </ul>
+        </p>
         <div class="attribution">
+          <p>Made by <a href="http://twitter.com/maxogden" target="_blank">@maxogden</a>. View the source or report bugs <a href="https://github.com/maxogden/voxel-gist" target="_blank">on Github</a>.</p>
           <a href="http://thenounproject.com/noun/game/#icon-No8609" target="_blank">Play icon</a> designed by <a href="http://thenounproject.com/HenrikLundMikkelsen" target="_blank">Henrik Lund Mikkelsen</a> from The Noun Project<br>
           <a href="http://thenounproject.com/noun/save/#icon-No10208" target="_blank">Save icon</a> designed by <a href="http://thenounproject.com/mabusafiah" target="_blank">Muneer A.Safiah</a> from The Noun Project<br>
           <a href="http://thenounproject.com/noun/login/#icon-No7717" target="_blank">Login</a> designed by <a href="http://thenounproject.com/brandon" target="_blank">Brandon Manning</a> from The Noun Project<br>
@@ -91,6 +72,33 @@
         </div>
       </div>
     </div>
-    <script type="text/javascript" src="bundle.js"></script>    
+    <script id="template" type="text/template">var createGame = require('voxel-engine')
+
+function sphereWorld(x, y,z ) {
+  // return the number of the material you want to show up
+  // at the current x, y, z position.
+  // the numbers refer to the games materials array.
+  // 0 is air
+	if (x*x + y*y + z*z > 15*15) return 0
+  // 3 is dirt
+  return 3	
+}
+
+var game = createGame({
+  // use the sphereWorld function to make the worlds voxels
+  generate: sphereWorld,
+  // make the player start y (up) position 1000
+  startingPosition: [0, 1000, 0],
+  materials: [['grass', 'dirt', 'grass_dirt'], 'brick', 'dirt', 'obsidian', 'bedrock']
+})
+
+// rotate camera to look straight down
+game.controls.pitchObject.rotation.x = -1.5
+
+// add the game to the page and make it playable
+var container = document.body
+game.appendTo(container)
+game.setupPointerLock(container)</script>
+  <script type="text/javascript" src="bundle.js"></script>    
   </body>
 </html>

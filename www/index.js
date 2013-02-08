@@ -36,13 +36,7 @@ function loadCode(cb) {
   if (stored) return cb(false, stored)
   
   // todo read from template/file/server
-  var defaultGame = "var createGame = require('voxel-engine')\n\n" +
-  "window.game = createGame()\n\n" +
-  "// rotate camera to look straight down\n" +
-  "game.controls.pitchObject.rotation.x = -1.5\n\n" + 
-  "var container = document.body\n" +
-  "game.appendTo(container)\n" + 
-  "game.setupPointerLock(container)\n"
+  var defaultGame = document.querySelector('#template').innerText
   cb(false, defaultGame)
 }
 
