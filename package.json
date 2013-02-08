@@ -11,8 +11,9 @@
     "url": "git@github.com:maxogden/voxel-gist.git"
   },
   "dependencies": {
-    "element-class": "0.0.1",
+    "element-class": "0.0.2",
     "ecstatic": "0.3.2",
+    "toolbar": "0.0.5",
     "jsonp": "0.0.3",
     "javascript-editor": "0.0.1",
     "cookie": "0.0.5",

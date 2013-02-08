@@ -72,14 +72,14 @@ loadCode(function(err, code) {
   var controls = toolbar({el: controlsContainer, noKeydown: true})
 
   controls.on('select', function(item) {
-    var className = '#' + item
-    var el = document.querySelector(className)
-    if (el === outputEl) {
+    if (item === "play") {
+      elementClass(howTo).add('hidden')
       elementClass(outputEl).remove('hidden')
       elementClass(editorEl).add('hidden')
       gameCreator.bundle(editor.editor.getValue())
     }
-    if (el === editorEl) {
+    if (item === "edit") {
+      elementClass(howTo).add('hidden')
       if (!editorEl.className.match(/hidden/)) return
       elementClass(editorEl).remove('hidden')
       elementClass(outputEl).add('hidden')
@@ -87,12 +87,12 @@ loadCode(function(err, code) {
       if (gameCreator.iframe) gameCreator.iframe.setHTML(" ")
       elementClass(howTo).add('hidden')
     }
-    if (item === "howto") elementClass(howTo).remove('hidden')
     if (item === "save") {
       if (loggedIn) return saveGist(gistID)
       loadingClass.remove('hidden')
       window.location.href = "/login"
     }
+    if (item === "howto") elementClass(howTo).remove('hidden')
   })
 
   gameCreator.on('bundleStart', function() {
