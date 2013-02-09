@@ -42,28 +42,35 @@ function saveGist(req, res) {
     var cookies = qs.parse(req.headers.cookie)
     if (!cookies['user-id']) return res.end(JSON.stringify({error: 'not logged in'}))
     var token = sessions[cookies['user-id']]
-    var gist = {
-      "description": "voxel.js game",
-      "public": true,
-      "files": {
-        "index.js": {
-          "content": funcString.toString()
+    snuggie.bundle(funcString.toString(), function(err, bundle) {
+      if (err) return res.end(JSON.stringify({"snuggieError": true, error: err}))
+      var minified = minifyBundle(bundle)
+      var gist = {
+        "description": "voxel.js game",
+        "public": true,
+        "files": {
+          "index.js": {
+            "content": funcString.toString()
+          },
+          "minified.js": {
+            "content": minified
+          }
         }
       }
-    }
-    var headers = {
-      'Authorization': 'token ' + token
-    }
-    var reqOpts = {json: gist, url: 'https://api.github.com/gists', headers: headers, method: "POST"}
-    if (id) { 
-      reqOpts.method = "PATCH"
-      reqOpts.url = reqOpts.url + '/' + id
-    }
-    request(reqOpts, function(err, resp, body) {
-      if (err) return res.end(JSON.stringify({"githubError": true, req: reqOpts, error: err, body: body}))
-      if (resp.statusCode > 399) return res.end(JSON.stringify({"githubError": true, req: reqOpts, error: body}))
-      res.end(JSON.stringify({ id: body.id }))
-    })    
+      var headers = {
+        'Authorization': 'token ' + token
+      }
+      var reqOpts = {json: gist, url: 'https://api.github.com/gists', headers: headers, method: "POST"}
+      if (id) { 
+        reqOpts.method = "PATCH"
+        reqOpts.url = reqOpts.url + '/' + id
+      }
+      request(reqOpts, function(err, resp, body) {
+        if (err) return res.end(JSON.stringify({"githubError": true, req: reqOpts, error: err, body: body}))
+        if (resp.statusCode > 399) return res.end(JSON.stringify({"githubError": true, req: reqOpts, error: body}))
+        res.end(JSON.stringify({ id: body.id }))
+      })
+    })
   }))
 }
 
@@ -80,6 +87,29 @@ function checkSession(req, res) {
   var token = cookies['user-id']
   // delete old sessions
   if (token && !sessions[token]) res.setHeader('set-cookie', 'user-id=; path=/')
+}
+
+function snuggieBundle(req, res) {
+  snuggie.handler(req, function(err, bundle) {
+    if (err) return snuggie.respond(res, JSON.stringify(err))
+    var minified = minifyBundle(bundle, req, res)
+    serveGzip(minified, req, res)
+  })
+}
+
+function minifyBundle(bundle) {
+  return uglify.minify(bundle, {fromString: true}).code
+}
+
+function serveGzip(bundle, req, res) {
+  var body = JSON.stringify({bundle: bundle})
+  var accept = req.headers['accept-encoding']
+  if (!accept || !accept.match('gzip')) return snuggie.respond(res, body)
+  zlib.gzip(body, function(err, buffer) {
+    res.setHeader('Content-Encoding', 'gzip')
+    snuggie.respond(res, buffer)
+  })
+  
 }
 
 var http = require('http').createServer(function(req, res) {
@@ -102,15 +132,5 @@ var http = require('http').createServer(function(req, res) {
   if (req.url.match(/\/save/)) return saveGist(req, res)
   
   // for everything else there's snuggie
-  snuggie.handler(req, function(err, bundle) {
-    if (err) return snuggie.respond(res, JSON.stringify(err))
-    var minified = uglify.minify(bundle, {fromString: true}).code
-    var body = JSON.stringify({bundle: minified})
-    var accept = req.headers['accept-encoding']
-    if (!accept || !accept.match('gzip')) return snuggie.respond(res, body)
-    zlib.gzip(body, function(err, buffer) {
-      res.setHeader('Content-Encoding', 'gzip')
-      snuggie.respond(res, buffer)
-    })
-  })
+  snuggieBundle(req, res)
 }).listen(80)
