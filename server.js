@@ -8,6 +8,7 @@ var url = require('url')
 var concat = require('concat-stream')
 var qs = require('querystring')
 var request = require('request')
+var filed = require('filed')
 
 // sessions are just used for publishing gists
 var sessions = {}
@@ -108,8 +109,11 @@ function serveGzip(bundle, req, res) {
   zlib.gzip(body, function(err, buffer) {
     res.setHeader('Content-Encoding', 'gzip')
     snuggie.respond(res, buffer)
-  })
-  
+  }) 
+}
+
+function serveEmbed(req, res) {
+  filed('www/embed.html').pipe(res)
 }
 
 var http = require('http').createServer(function(req, res) {
@@ -125,6 +129,14 @@ var http = require('http').createServer(function(req, res) {
   if (req.url.match(/\/login/)) return github.login(req, res)
   if (req.url.match(/\/callback/)) return github.callback(req, res)
   
+  // iframe embed
+  var playID = req.url.match(/^\/play\/(\d+)$/)
+  if (playID) playID = playID[1]
+  if (playID) return serveEmbed(req, res)
+  
+  // serve embeds the static files from /
+  if (req.url.match(/^\/play\//)) req.url = req.url.replace('play/', '')
+
   // rules: all GET are static
   if (req.method === "GET") return ecstatic(req, res)
   
