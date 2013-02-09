@@ -13,12 +13,25 @@ if (cookies && cookies['user-id']) loggedIn = true
 
 var parsedURL = url.parse(window.location.href, true)
 var gistID = parsedURL.path.match(/^\/(\d+)$/)
-if (gistID) gistID = gistID[1]
+if (gistID) {
+  gistID = gistID[1]
+  enableShare(gistID)
+}
 
 var loadingClass = elementClass(document.querySelector('.loading'))
 var outputEl = document.querySelector('#play')
 var editorEl = document.querySelector('#edit')
 var painterEl = document.querySelector('#paint')
+
+
+function enableShare(gistID) {
+  var textarea = document.querySelector('#shareTextarea')
+  var instructions = document.querySelector('#shareInstructions')
+  var disabled = document.querySelector('#shareDisabled')
+  elementClass(disabled).add('hidden')
+  elementClass(instructions).remove('hidden')
+  textarea.value = '<iframe width="560" height="315" src="' + window.location.origin + '/play/' + gistID + '" frameborder="0" allowfullscreen></iframe>'
+}
 
 function loadCode(cb) {
   if (gistID) {
@@ -40,6 +53,19 @@ function loadCode(cb) {
   cb(false, defaultGame)
 }
 
+function highlightTextareaContents(textBox) {
+  textBox.onfocus = function() {
+    textBox.select()
+
+    // Work around Chrome's little problem
+    textBox.onmouseup = function() {
+      // Prevent further mouseup intervention
+      textBox.onmouseup = null
+      return false
+    }
+  }
+}
+
 loadCode(function(err, code) {
   if (err) return alert(JSON.stringify(err))
   
@@ -59,10 +85,12 @@ loadCode(function(err, code) {
   if (parsedURL.query.save) return saveGist(gistID)
 
   var howTo = document.querySelector('#howto')
+  var share = document.querySelector('#share')
   var crosshair = document.querySelector('#crosshair')
   var crosshairClass = elementClass(crosshair)
   var controlsContainer = document.querySelector('#controls')
-  
+  var textBox = document.querySelector("#shareTextarea")
+  highlightTextareaContents(textBox)
   var controls = toolbar({el: controlsContainer, noKeydown: true})
 
   controls.on('select', function(item) {
@@ -86,7 +114,14 @@ loadCode(function(err, code) {
       loadingClass.remove('hidden')
       window.location.href = "/login"
     }
-    if (item === "howto") elementClass(howTo).remove('hidden')
+    if (item === "howto") {
+      elementClass(howTo).remove('hidden')
+      elementClass(share).add('hidden')
+    }
+    if (item === "share") {
+      elementClass(howTo).add('hidden')
+      elementClass(share).remove('hidden')
+    }
   })
 
   gameCreator.on('bundleStart', function() {
