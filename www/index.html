@@ -87,28 +87,66 @@
         </div>
       </div>
     </div>
-    <script id="template" type="text/template">var createGame = require('voxel-engine')
+<script id="template" type="text/template">var createGame = require('voxel-engine')
+var voxel = require('voxel')
+var player = require('voxel-player')
+var createTerrain = require('voxel-perlin-terrain')
+var highlighter = require('voxel-highlight')
+var createTree = require('voxel-forest')
 
-function sphereWorld(x, y, z) {
-  // return the index of the material you want to show up
-  // 0 is air
-	if (x*x + y*y + z*z > 15*15) return 0
-  return 3	
-}
-
+// setup the game and add some trees
 var game = createGame({
-  generate: sphereWorld,
-  startingPosition: [0, 1000, 0], // x, y, z
-  materials: [['grass', 'dirt', 'grass_dirt'], 'brick', 'dirt', 'obsidian', 'bedrock']
+  generateVoxelChunk: createTerrain({ scaleFactor: 10 }),
+  chunkDistance: 2,
+  materials: [
+    'obsidian',
+    ['grass', 'dirt', 'grass_dirt'],
+    'brick',
+    'grass',
+    'plank'
+  ],
+  worldOrigin: [0, 0, 0],
+  controls: { discreteFire: true }
 })
 
-// rotate camera to look straight down
-game.controls.pitchObject.rotation.x = -1.5
+window.game = game // for debugging
 
-var container = document.body
-game.appendTo(container)
-// have the game take over your mouse pointer when you click on it
-game.setupPointerLock(container)</script>
+game.appendTo(document.body)
+
+for (var i = 0; i < 20; i++) createTree(game, { bark: 5, leaves: 4 })
+
+// create the player from a minecraft skin file and tell the
+// game to use it as the main player
+var createPlayer = player(game)
+var substack = createPlayer('substack.png')
+substack.yaw.position.set(0, -1200, 0)
+substack.possess()
+
+// toggle between first and third person modes
+window.addEventListener('keydown', function (ev) {
+  if (ev.keyCode === 'R'.charCodeAt(0)) substack.toggle()
+})
+
+// block interaction stuff
+var highlight = highlighter(game)
+
+var currentMaterial = 2
+
+game.on('fire', function(target, state) {
+  var vec = game.cameraVector()
+  var pos = game.cameraPosition()
+  var point = game.raycast(pos, vec, 100)
+  if (!point) return
+  var erase = !state.firealt && !state.alt
+  if (erase) {
+    game.setBlock(point, 0)
+  } else {
+    game.createBlock(point.addSelf(vec.multiplyScalar(-game.cubeSize/2)), currentMaterial)
+  }
+})
+
+module.exports = game
+</script>
   <script type="text/javascript" src="bundle.js"></script>    
   </body>
 </html>
