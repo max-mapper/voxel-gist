@@ -59,7 +59,8 @@ function saveGist(req, res) {
         }
       }
       var headers = {
-        'Authorization': 'token ' + token
+        'Authorization': 'token ' + token,
+        'user-agent': "@maxogden"
       }
       var reqOpts = {json: gist, url: 'https://api.github.com/gists', headers: headers, method: "POST"}
       if (id) { 

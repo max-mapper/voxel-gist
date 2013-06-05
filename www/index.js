@@ -53,29 +53,19 @@ function loadCode(cb) {
   cb(false, defaultGame)
 }
 
-function highlightTextareaContents(textBox) {
-  textBox.onfocus = function() {
-    textBox.select()
-
-    // Work around Chrome's little problem
-    textBox.onmouseup = function() {
-      // Prevent further mouseup intervention
-      textBox.onmouseup = null
-      return false
-    }
-  }
-}
-
 loadCode(function(err, code) {
   if (err) return alert(JSON.stringify(err))
   
   var snuggieAPI = window.location.protocol + '//' + window.location.host
-
+  
   var editor = jsEditor({
-    value: code,
     container: editorEl,
     lineWrapping: true
   })
+  
+  window.editor = editor
+  
+  editor.setValue(code)
   
   var gameCreator = sandbox({
     iframeHead: "<script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r54/three.min.js'></script>",
@@ -90,17 +80,35 @@ loadCode(function(err, code) {
   var crosshairClass = elementClass(crosshair)
   var controlsContainer = document.querySelector('#controls')
   var textBox = document.querySelector("#shareTextarea")
-  highlightTextareaContents(textBox)
-  var controls = toolbar({el: controlsContainer, noKeydown: true})
 
-  controls.on('select', function(item) {
-    if (item === "play") {
+  var actionsMenu = $(".actionsMenu")
+  actionsMenu.dropkick({
+    change: function(value, label) {
+      if (value === 'noop') return
+      if (value in actions) actions[value]()
+      setTimeout(function() {
+        actionsMenu.dropkick('reset')
+      }, 0)
+    }
+  })
+  
+  $(".actionsButtons a").click(function() {
+    var target = $(this)
+    var action = target.attr('data-action')
+    if (action in actions) actions[action]()
+    target.siblings().removeClass("active")
+    target.addClass("active")
+  });
+  
+  var actions = {
+    play: function() {
       elementClass(howTo).add('hidden')
       elementClass(outputEl).remove('hidden')
       elementClass(editorEl).add('hidden')
       gameCreator.bundle(editor.editor.getValue())
-    }
-    if (item === "edit") {
+    },
+
+    edit: function() {
       elementClass(howTo).add('hidden')
       if (!editorEl.className.match(/hidden/)) return
       elementClass(editorEl).remove('hidden')
@@ -108,21 +116,24 @@ loadCode(function(err, code) {
       // clear current game
       if (gameCreator.iframe) gameCreator.iframe.setHTML(" ")
       elementClass(howTo).add('hidden')
-    }
-    if (item === "save") {
+    },
+
+    save: function() {
       if (loggedIn) return saveGist(gistID)
       loadingClass.remove('hidden')
       window.location.href = "/login"
-    }
-    if (item === "howto") {
+    },
+
+    howto: function() {
       elementClass(howTo).remove('hidden')
       elementClass(share).add('hidden')
-    }
-    if (item === "share") {
+    },
+
+    share: function() {
       elementClass(howTo).add('hidden')
       elementClass(share).remove('hidden')
     }
-  })
+  }
 
   gameCreator.on('bundleStart', function() {
     crosshairClass.add('spinning')

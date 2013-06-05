@@ -4,52 +4,32 @@
     <title>Voxel Creator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="codemirror.css"/>
-    <link rel="stylesheet" type="text/css" href="ratchet.css"/>
+    <link rel="stylesheet" type="text/css" href="theme.css"/>
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="flatui/css/flat-ui.css">
     <link rel="stylesheet" type="text/css" href="style.css"/>
   </head>
   <body>
-    <div id="header">
-      <a href="/"><img class="logo" src="logo-black.png"></a>
+    <a href="/"><img class="logo" src="logo-black.png"></a>
 
-      <div class="loading hidden">
-        <img src="cube.gif"><div>LOADING...</div>
-      </div>
-      
-      <nav class="bar-tab" id="controls">
-        <ul class="tab-inner">
-          <li class="tab-item">
-            <a href="">
-              <img class="tab-icon" src="icons/noun_project_4209.png">
-              <div class="tab-label" data-id="edit">Edit</div>
-            </a>
-          </li>
-          <li class="tab-item">
-            <a href="">
-              <img class="tab-icon" src="icons/noun_project_8609.png">
-              <div class="tab-label" data-id="play">Play</div>
-            </a>
-          </li>
-          <li class="tab-item" id="save">
-            <a href="">
-              <img class="tab-icon" src="icons/noun_project_10208.png">
-              <div class="tab-label" data-id="save">Save Gist</div>
-            </a>
-          </li>
-          <li class="tab-item active">
-            <a href="">
-              <img class="tab-icon" src="icons/noun_project_4200.png">
-              <div class="tab-label" data-id="howto">How-To</div>
-            </a>
-          </li>
-          <li class="tab-item">
-            <a href="">
-              <img class="tab-icon" src="icons/noun_project_6296.png">
-              <div class="tab-label" data-id="share">Share</div>
-            </a>
-          </li>
-        </ul>
-      </nav>
+    <div class="loading hidden">
+      <img src="cube.gif"><div>LOADING...</div>
     </div>
+    
+    <select class="actionsMenu" value="Actions" tabindex="1">
+      <option value="noop" selected="selected">Actions</option>
+      <option value="save">Save Gist</option>
+      <option value="howto">See instructions</option>
+      <option value="share">Share/Embed</option>
+    </select>
+    
+    <div class="btn-toolbar actionsButtons">
+      <div class="btn-group">
+        <a data-action="edit" class="btn btn-primary active"><i class="fui-new-16"></i></a>
+        <a data-action="play" class="btn btn-primary"><i class="fui-eye-16"></i></a>
+      </div>
+    </div>
+          
     <div id="play" class="large hidden">
       <div id="crosshair"></div>
     </div>
@@ -64,7 +44,7 @@
         </div>
       </div>
       <div id="howto" class="">
-        <p>When you select <code>Play</code> your code from <code>Edit</code> will be turned into a game that you can play. You can go back to <code>Edit</code> as many times as you want to keep adding things to your game like new modules.</p>
+        <p>When you switch to Play Mode (click the eyeball) your code from Edit Mode will be turned into a game that you can play. You can go back to Edit as many times as you want to keep adding things to your game like new modules.</p>
         <p>Read the <a target="_blank" href="https://github.com/maxogden/voxel-engine/blob/master/README.md#api">main game documentation here</a>.</p>
         <p>View all of the different modules that you can <code>require</code> at the <a href="http://voxeljs.com#addons" target="_blank">add-ons section of voxeljs.com</a>.</p>
         <p>You can go load any github gist that has a voxel game inside a file called <code>index.js</code>. To save and share your code as gists you will need a <a href="https://github.com/" target="_blank">Github account</a>. It is free to sign up for one and they are useful to have as a coder. After you save you can share a link to your game with anyone!
@@ -87,66 +67,14 @@
         </div>
       </div>
     </div>
-<script id="template" type="text/template">var createGame = require('voxel-engine')
-var voxel = require('voxel')
-var player = require('voxel-player')
-var createTerrain = require('voxel-perlin-terrain')
-var highlighter = require('voxel-highlight')
-var createTree = require('voxel-forest')
-
-// setup the game and add some trees
-var game = createGame({
-  generateVoxelChunk: createTerrain({ scaleFactor: 10 }),
-  chunkDistance: 2,
-  materials: [
-    'obsidian',
-    ['grass', 'dirt', 'grass_dirt'],
-    'brick',
-    'grass',
-    'plank'
-  ],
-  worldOrigin: [0, 0, 0],
-  controls: { discreteFire: true }
+<script id="template" type="text/template">var textures = "http://commondatastorage.googleapis.com/voxeltextures/"
+var game = require('voxel-hello-world')({
+  texturePath: textures,
+  playerSkin: textures + 'player.png'
 })
 
-window.game = game // for debugging
-
-game.appendTo(document.body)
-
-for (var i = 0; i < 20; i++) createTree(game, { bark: 5, leaves: 4 })
-
-// create the player from a minecraft skin file and tell the
-// game to use it as the main player
-var createPlayer = player(game)
-var substack = createPlayer('substack.png')
-substack.yaw.position.set(0, -1200, 0)
-substack.possess()
-
-// toggle between first and third person modes
-window.addEventListener('keydown', function (ev) {
-  if (ev.keyCode === 'R'.charCodeAt(0)) substack.toggle()
-})
-
-// block interaction stuff
-var highlight = highlighter(game)
-
-var currentMaterial = 2
-
-game.on('fire', function(target, state) {
-  var vec = game.cameraVector()
-  var pos = game.cameraPosition()
-  var point = game.raycast(pos, vec, 100)
-  if (!point) return
-  var erase = !state.firealt && !state.alt
-  if (erase) {
-    game.setBlock(point, 0)
-  } else {
-    game.createBlock(point.addSelf(vec.multiplyScalar(-game.cubeSize/2)), currentMaterial)
-  }
-})
-
-module.exports = game
 </script>
-  <script type="text/javascript" src="bundle.js"></script>    
+  <script type="text/javascript" src="flatui-deps.js"></script>
+  <script type="text/javascript" src="bundle.js"></script>
   </body>
 </html>
