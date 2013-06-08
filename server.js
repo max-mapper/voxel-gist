@@ -41,7 +41,7 @@ function saveGist(req, res) {
   req.pipe(concat(function(err, funcString) {
     if (err) return res.end(JSON.stringify({"concatError": true, error: err}))
     var cookies = qs.parse(req.headers.cookie)
-    if (!cookies['user-id']) return res.end(JSON.stringify({error: 'not logged in'}))
+    if (!cookies['user-id']) return res.end(JSON.stringify({error: 'not logged in', cookies: JSON.stringify(req.headers.cookie)}))
     var token = sessions[cookies['user-id']]
     snuggie.bundle(funcString.toString(), function(err, bundle) {
       if (err) return res.end(JSON.stringify({"snuggieError": true, error: err}))
