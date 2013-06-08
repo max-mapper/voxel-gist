@@ -67,12 +67,39 @@
         </div>
       </div>
     </div>
-<script id="template" type="text/template">var textures = "http://commondatastorage.googleapis.com/voxeltextures/"
+<script id="template" type="text/template">// http://en.wikipedia.org/wiki/Perlin_noise
+var perlinTerrain = require('voxel-perlin-terrain')
+
 var game = require('voxel-hello-world')({
-  texturePath: textures,
-  playerSkin: textures + 'player.png'
+  // we will be giving the engine our own terrain data
+  // so we should tell it not to generate its own
+  generateChunks: false,
+  // how much terrain should be loaded at a time:
+  chunkDistance: 3,
+  playerSkin: 'substack.png'
 })
 
+var chunkSize = 32
+var seed = 'abc123'
+var floor = 0
+var ceiling = 5
+var terrainGenerator = perlinTerrain(seed, floor, ceiling)
+
+game.voxels.on('missingChunk', function(chunkPosition) {
+  var voxels = terrainGenerator(chunkPosition, chunkSize)
+  var chunk = {
+    position: chunkPosition,
+    dims: [chunkSize, chunkSize, chunkSize],
+    voxels: voxels
+  }
+  game.showChunk(chunk)
+})
+
+// start game without waiting for user to click
+game.paused = false
+
+// for debugging
+window.game = game
 </script>
   <script type="text/javascript" src="flatui-deps.js"></script>
   <script type="text/javascript" src="bundle.js"></script>

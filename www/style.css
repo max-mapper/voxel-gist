@@ -100,7 +100,7 @@ body > pre { display: none }
 #howto, #share { padding: 20px; float: right; width: 30%; overflow: auto; border-left: 1px solid #eee; border-bottom: 1px solid #eee; }
 #howto ul { list-style-type: none; }
 #howto p { margin-bottom: 10px }
-.logo { padding: 5px 10px; float: left; }
+.logo { padding: 0px 6px; float: left; }
 .attribution { margin: 20px 0 0 0; float: left; font-size: 12px; }
 #controls { width: 50%; top: 0; right: 0; left: initial;}
 #container {

@@ -68,7 +68,7 @@ loadCode(function(err, code) {
   editor.setValue(code)
   
   var gameCreator = sandbox({
-    iframeHead: "<script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r54/three.min.js'></script>",
+    iframeHead: "<script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r56/three.min.js'></script>",
     container: outputEl
   })
 
